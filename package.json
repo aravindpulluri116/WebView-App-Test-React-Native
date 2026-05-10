@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "postinstall": "node scripts/patch-expo-modules-stl.cjs",
+    "postinstall": "node scripts/patch-expo-modules-stl.cjs && node scripts/sync-android-from-client.cjs",
+    "sync:android": "node scripts/sync-android-from-client.cjs",
+    "android:release": "npm run sync:android && node scripts/assemble-release.cjs",
+    "android:release:install": "npm run android:release && node scripts/install-release-apk.cjs",
     "start": "node ./node_modules/expo/bin/cli start",
     "android": "node ./node_modules/expo/bin/cli run:android",
     "prebuild": "node ./node_modules/expo/bin/cli prebuild --platform android",

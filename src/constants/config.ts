@@ -1,35 +1,56 @@
-/**
- * Primary site loaded in the WebView.
- */
-export const WEB_URL = 'https://www.subhchandraorganics.com' as const;
+import clientConfig from '../../client.config.json';
 
-/** Shown in exit confirmation and system UI where relevant. */
-export const APP_DISPLAY_NAME = 'Subhchandra Organics' as const;
-
-/**
- * Hosts treated as first-party (stay inside the WebView).
- */
-export const PRIMARY_HOSTS = ['subhchandraorganics.com', 'www.subhchandraorganics.com'] as const;
+const WEB_URL_DEFAULT = clientConfig.WEB_URL_DEFAULT;
+export const APP_DISPLAY_NAME = clientConfig.APP_DISPLAY_NAME;
+export const PAYMENT_HOST_PATTERNS = clientConfig.PAYMENT_HOST_PATTERNS as readonly string[];
+export const AUTH_HOST_PATTERNS = clientConfig.AUTH_HOST_PATTERNS as readonly string[];
 
 /**
- * Payment / wallet / issuer hosts allowed inside the WebView (checkout, redirects, 3DS, wallets).
- * Extend if your gateway adds new domains.
+ * Primary site URL: override with `EXPO_PUBLIC_WEB_URL` when bundling.
  */
-export const PAYMENT_HOST_PATTERNS = [
-  'razorpay.com',
-  'razorpay.in',
-  'rzp.io',
-  'pay.google.com',
-  'checkout.stripe.com',
-  'js.stripe.com',
-  'payu.in',
-  'paytm.com',
-  'phonepe.com',
-  'npci.org.in',
-] as const;
+function readWebUrl(): string {
+  const raw =
+    typeof process !== 'undefined' && typeof process.env !== 'undefined'
+      ? process.env.EXPO_PUBLIC_WEB_URL?.trim()
+      : undefined;
+  if (!raw) {
+    return WEB_URL_DEFAULT;
+  }
+  try {
+    const u = new URL(raw);
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+      return WEB_URL_DEFAULT;
+    }
+    u.hash = '';
+    if ((u.pathname === '/' || u.pathname === '') && !u.search) {
+      return u.origin;
+    }
+    return u.toString();
+  } catch {
+    return WEB_URL_DEFAULT;
+  }
+}
 
-/** OAuth / issuer pages that must stay in-WebView when linked from checkout or login. */
-export const AUTH_HOST_PATTERNS = ['accounts.google.com'] as const;
+/** First-party hosts for navigation (derived from `WEB_URL` + optional `www` / apex pair). */
+function primaryHostsForUrl(webUrl: string): readonly string[] {
+  try {
+    const h = new URL(webUrl).hostname.toLowerCase();
+    if (!h) {
+      return ['localhost'];
+    }
+    if (h.startsWith('www.')) {
+      const apex = h.slice(4);
+      return apex ? [apex, h] : [h];
+    }
+    return [h, `www.${h}`];
+  } catch {
+    return ['localhost'];
+  }
+}
+
+export const WEB_URL = readWebUrl();
+
+export const PRIMARY_HOSTS = primaryHostsForUrl(WEB_URL) as readonly string[];
 
 /**
  * Deep-link style schemes used by UPI / wallet apps (must leave the WebView).

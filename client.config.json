@@ -1,0 +1,15 @@
+{
+  "_comments": [
+    "After changing ANDROID_PACKAGE, APP_DISPLAY_NAME, APK_BASENAME, etc.: run `npm run sync:android` (or `npm install` — postinstall runs the same sync).",
+    "Build release APK (sync + assembleRelease): `npm run android:release`.",
+    "Build and install: `npm run android:release:install` (uses ANDROID_HOME / default SDK platform-tools if `adb` is not on PATH)."
+  ],
+  "WEB_URL_DEFAULT": "https://www.subhchandraorganics.com/admin",
+  "APP_DISPLAY_NAME": "Subhchandra Organics Admin",
+  "EXPO_SLUG": "subhchandra-webview-admin",
+  "APK_BASENAME": "subhchandra-admin",
+  "ANDROID_PACKAGE": "com.subhchandraorganics.webapp.admin",
+  "PAYMENT_HOST_PATTERNS": ["razorpay.com", "razorpay.in", "rzp.io"],
+  "AUTH_HOST_PATTERNS": ["accounts.google.com"],
+  "LOG_TAG": "Subhchandra Admin"
+}

@@ -1,6 +1,7 @@
 import type { ExpoConfig } from 'expo/config';
 
 import pkg from './package.json';
+import clientConfig from './client.config.json';
 
 /**
  * Monotonic Android versionCode. EAS `autoIncrement` bumps from the last successful build;
@@ -18,8 +19,8 @@ const androidVersionCode = (() => {
 // Expo's `ExpoConfig` type can lag new manifest keys; runtime config is validated by `expo config`.
 export default (): ExpoConfig =>
   ({
-    name: 'Subhchandra Organics',
-    slug: 'subhchandra-webview',
+    name: clientConfig.APP_DISPLAY_NAME,
+    slug: clientConfig.EXPO_SLUG,
     version: pkg.version,
     orientation: 'portrait',
     platforms: ['android'],
@@ -33,8 +34,7 @@ export default (): ExpoConfig =>
       backgroundColor: '#000000',
     },
     android: {
-      // TODO: replace with your Play Console applicationId before going live
-      package: 'com.subhchandraorganics.webapp',
+      package: clientConfig.ANDROID_PACKAGE,
       versionCode: androidVersionCode,
       permissions: ['android.permission.INTERNET', 'android.permission.ACCESS_NETWORK_STATE'],
       adaptiveIcon: {
