@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
+    "postinstall": "node scripts/patch-expo-modules-stl.cjs",
     "start": "node ./node_modules/expo/bin/cli start",
     "android": "node ./node_modules/expo/bin/cli run:android",
     "prebuild": "node ./node_modules/expo/bin/cli prebuild --platform android",
